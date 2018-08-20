@@ -1,0 +1,27 @@
+extends layout
+
+block content
+
+  h1 Faculties: #{faculty.name}
+  
+  div(style='margin-left:20px;margin-top:20px')
+
+    h4 Students
+    
+    dl
+    each student in faculty_students
+      dt 
+        a(href=student.url) #{student.faculty}
+      dd #{student.level}
+      dd #{student.department}
+
+    else
+      p This faculty has no students
+
+      hr
+  p
+    a(href=faculty.url+'/delete') Delete faculty
+  
+   
+  
+      

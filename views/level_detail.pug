@@ -1,0 +1,24 @@
+extends layout
+
+block content
+
+  h1 Level: #{level.name}
+  
+  
+  div(style='margin-left:20px;margin-top:20px')
+
+    h4 Students
+    
+    dl
+      each student in level_students
+        dt 
+          a(href=student.url) #{student.level}
+        | #{student.department}
+        | #{student.faculty}
+
+      else
+        p This level has no students.
+    
+    hr
+    p
+      a(href=level.url+'/delete') Delete level

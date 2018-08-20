@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1= title
+  
+  ul
+  each val in list_levels
+    li 
+      a(href=val.url) #{val.level}
+
+  else
+    li There are no levels.

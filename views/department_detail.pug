@@ -1,0 +1,25 @@
+extends layout
+
+block content
+
+  h1 Department: #{department.name}
+  
+  div(style='margin-left:20px;margin-top:20px')
+
+    h4 Students
+    
+    dl
+    each student in department_students
+      dt 
+        a(href=student.url) #{student.department}
+      dd #{student.level}
+      dd #{student.faculty}
+
+    else
+      p This department has no students
+
+      hr
+  p
+    a(href=department.url+'/delete') Delete department
+
+      

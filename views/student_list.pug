@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h1= title
+  
+  ul
+    each student in student_list
+      li 
+        a(href=student.url) #{student.first_name}
+        | (#{student.last_name})
+        | (#{student.level}) 
+        | (#{student.department}) 
+        | (#{student.faculty}) 
+       
+
+    else
+      li There are no students.

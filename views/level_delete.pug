@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  h1 #{title}: #{level.level}
+  p= level.lifespan
+  
+  if level_students.length
+  
+    p #[strong Delete the following students before attempting to delete this level.]
+  
+    div(style='margin-left:20px;margin-top:20px')
+
+      h4 Students
+    
+      dl
+      each student in level_students
+        dt 
+          a(href=student.url) #{student.level}
+        dd #{student.name}
+
+  else
+    p Do you really want to delete this Level?
+    
+    form(method='POST' action='')
+      div.form-group
+        input#levelid.form-control(type='hidden',name='levelid', required='true', value=level._id )
+
+      button.btn.btn-primary(type='submit') Delete

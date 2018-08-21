@@ -1,0 +1,42 @@
+extends layout
+
+block content
+  h1= title
+
+  form(method='POST' action='')
+    div.form-group
+      label(for='first_name') First Name:
+      input#first_name.form-control(type='text' placeholder='First name (Christian) last' name='first_name' required='true' value=(undefined===student ? '' : student.first_name) )
+      label(for='last_name') Last Name:
+      input#last_name.form-control(type='text' placeholder='Last name (surname)' name='last_name' required='true' value=(undefined===student ? '' : student.last_name))
+    div.form-group
+      label(for='level') Level:
+      select#level.form-control(type='select', placeholder='Select level' name='level' required='true' )
+        for level in levels
+          if student
+            option(value=level._id selected=(level._id.toString()==student.level._id.toString() ? 'selected' : false) ) #{level.level}
+          else
+            option(value=level._id) #{level.level}
+    div.form-group
+      label(for='department') Department:
+      select#department.form-control(type='select', placeholder='Select department' name='department' required='true' )
+        for department in departments
+          if student
+            option(value=department._id selected=(department._id.toString()==student.department._id.toString() ? 'selected' : false) ) #{department.name}
+          else
+            option(value=department._id) #{department.name}
+    div.form-group
+      label(for='faculty') Faculty:
+      select#faculty.form-control(type='select', placeholder='Select faculty' name='faculty' required='true' )
+        for faculty in faculties
+          if student
+            option(value=faculty._id selected=(faculty._id.toString()==student.faculty._id.toString() ? 'selected' : false) ) #{faculty.name}
+          else
+            option(value=faculty._id) #{faculty.name}
+    
+    button.btn.btn-primary(type='submit') Submit
+
+  if errors 
+    ul
+      for error in errors
+        li!= error.msg

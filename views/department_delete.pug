@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  h1 #{title}: #{department.name}
+
+  
+  if department_students.length
+  
+    p #[strong Delete the following students before attempting to delete this department.]
+  
+    div(style='margin-left:20px;margin-top:20px')
+
+      h4 Students
+    
+      dl
+      each student in department_students
+        dt 
+          a(href=student.url) #{student.department}
+        dd #{student.name}
+
+  else
+    p Do you really want to delete this Department?
+    
+    form(method='POST' action='')
+      div.form-group
+        input#departmentid.form-control(type='hidden',name='departmentid', required='true', value=department._id )
+
+      button.btn.btn-primary(type='submit') Delete

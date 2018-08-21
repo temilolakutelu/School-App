@@ -6,12 +6,16 @@ block content
   ul
     each student in student_list
       li 
-        a(href=student.url) #{student.first_name}
-        | (#{student.last_name})
-        | (#{student.level}) 
-        | (#{student.department}) 
-        | (#{student.faculty}) 
-       
+        | #[strong Name] #{student.name}
+
+        | #[strong level:] #{student.level.level}, 
+        | #[strong department:]#{student.department.name}, 
+        | #[strong faculty:] #{student.faculty.name} 
+        
+      p
+        a(href=student.url+'/delete') Delete Student
 
     else
       li There are no students.
+
+

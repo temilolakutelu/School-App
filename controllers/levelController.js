@@ -25,7 +25,7 @@ exports.level_detail = function (req, res, next) {
                 .exec(callback);
         },
 
-        level_lists: function (callback) {
+        level_students: function (callback) {
             Level.find({ 'level': id })
                 .exec(callback);
         },
@@ -38,7 +38,7 @@ exports.level_detail = function (req, res, next) {
             return next(err);
         }
         // Successful, so render
-        res.render('level_detail', { title: 'Level Detail', level: results.level, level_lists: results.level_lists });
+        res.render('level_detail', { title: 'Level Detail', level: results.level, level_students: results.level_students });
     });
 
 };

@@ -5,30 +5,10 @@ var Department = require('../models/DepartmentModel');
 var Faculty = require('../models/facultyModel');
 var async = require('async');
 
-exports.index = function (req, res) {
-
-    async.parallel({
-        student_count: function (callback) {
-            Student.countDocuments({}, callback);
-        },
-        level_count: function (callback) {
-            Level.countDocuments({}, callback);
-        },
-        department_count: function (callback) {
-            Department.countDocuments({}, callback);
-        },
-        faculty_count: function (callback) {
-            Faculty.countDocuments({}, callback);
-        },
-
-    }, function (err, results) {
-        res.render('index', { title: 'School Database', error: err, data: results });
-    });
-};
 // Display list of allstudents.
 exports.student_list = function (req, res, next) {
 
-    Student.find({}, 'level department faculty')
+    Student.find({}, 'first_name last_name level department faculty ')
 
         .populate('level')
         .populate('department')
@@ -40,34 +20,6 @@ exports.student_list = function (req, res, next) {
         });
 
 };
-
-
-// Display detail page for a specific student.
-exports.student_detail = function (req, res, next) {
-
-    async.parallel({
-        student: function (callback) {
-
-            Student.findById(req.params.id)
-                .populate('level')
-                .populate('department')
-                .populate('faculty')
-                .exec(callback);
-        },
-
-    }, function (err, results) {
-        if (err) { return next(err); }
-        if (results.student == null) { // No results.
-            var err = new Error('Student not found');
-            err.status = 404;
-            return next(err);
-        }
-        // Successful, so render.
-        res.render('student_details', { title: 'Student details', student: results.student });
-    });
-
-};
-
 
 // Display student create form on GET.
 exports.student_create_get = function (req, res, next) {
@@ -84,11 +36,73 @@ exports.student_create_get = function (req, res, next) {
         },
     }, function (err, results) {
         if (err) { return next(err); }
-        res.render('student_form', { title: 'Create Student', levels: results.levels, departments: results.departments });
+        res.render('student_form', { title: 'Create Student', levels: results.levels, departments: results.departments, faculties: results.faculties });
     });
 
 };
 
+
+// Handle student create on POST.
+exports.student_create_post = [
+    // Convert the level to an array.
+    (req, res, next) => {
+        if (!(req.body.level instanceof Array)) {
+            if (typeof req.body.level === 'undefined')
+                req.body.level = [];
+            else
+                req.body.level = new Array(req.body.level);
+        }
+        next();
+    },
+
+    (req, res, next) => {
+
+
+        // Create a Student object with escaped and trimmed data.
+        var student = new Student(
+            {
+                first_name: req.body.first_name,
+                last_name: req.body.last_name,
+                level: req.body.level,
+                department: req.body.department,
+                faculty: req.body.faculty,
+
+
+            });
+        async.parallel({
+            departments: function (callback) {
+                Department.find(callback);
+            },
+            levels: function (callback) {
+                Level.find(callback);
+            },
+            faculties: function (callback) {
+                Faculty.find(callback);
+            },
+        }, function (err, results) {
+            if (err) { return next(err); }
+
+            // Mark our selected levels as checked.
+            for (let i = 0; i < results.levels.length; i++) {
+                if (student.level.indexOf(results.levels[i]._id) > -1) {
+                    results.levels[i].checked = 'true';
+                }
+            }
+            res.render('student_form', {
+                title: 'Create Student', departments: results.departments, levels: results.levels,
+                faculties: results.department,
+                student: student, errors: errors.array()
+            });
+        });
+
+        student.save(function (err) {
+            if (err) { return next(err); }
+            //successful - redirect to new student record.
+            res.redirect(student.url);
+        });
+    }
+
+];
 
 // Display student delete form on GET.
 exports.student_delete_get = function (req, res, next) {
@@ -119,7 +133,7 @@ exports.student_delete_post = function (req, res, next) {
         // Success
 
         else {
-            // Student has no objects. Delete object and redirect to the list of students.
+
             Student.findByIdAndRemove(req.body.id, function deleteStudent(err) {
                 if (err) { return next(err); }
                 // Success - got to students list.

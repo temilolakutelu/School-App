@@ -13,8 +13,8 @@ block content
       each student in level_students
         dt 
           a(href=student.url) #{student.level}
-        | #{student.department}
-        | #{student.faculty}
+        dd #{student.department}
+        dd #{student.faculty}
 
       else
         p This level has no students.

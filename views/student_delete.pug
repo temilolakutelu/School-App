@@ -1,0 +1,23 @@
+extends layout
+
+block content
+
+  h1 #{title}: #{student.level}
+  
+  p #[strong Department:] 
+    a(href=student.department.url) #{student.department.name}
+  p #[strong Faculty:]
+  a(href=student.faculty.url)  #{student.faculty.name}
+
+  hr
+
+    div(style='margin-left:20px;margin-top:20px')
+    
+  else
+    p Do you really want to delete this Student?
+    
+    form(method='POST' action='')
+      div.form-group
+        input#id.form-control(type='hidden',name='id', required='true', value=student._id )
+
+      button.btn.btn-primary(type='submit') Delete

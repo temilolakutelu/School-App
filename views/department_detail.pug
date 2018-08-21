@@ -10,10 +10,12 @@ block content
     
     dl
     each student in department_students
-      dt 
-        a(href=student.url) #{student.department}
-      dd #{student.level}
-      dd #{student.faculty}
+     li 
+        | #[strong Name] #{student.name}
+
+        | #[strong level:] #{student.level.level}, 
+        | #[strong department:]#{student.department.name}, 
+        | #[strong faculty:] #{student.faculty.name} 
 
     else
       p This department has no students
